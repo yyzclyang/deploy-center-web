@@ -49,7 +49,7 @@ module.exports = {
       extensions: ['.js', '.jsx', 'ts', 'tsx']
     }),
     new HtmlWebpackPlugin({
-      title: 'webpack5-with-react',
+      title: 'deploy-center-web',
       template: './src/index.html',
       favicon: './src/favicon.ico',
       inject: 'body'
