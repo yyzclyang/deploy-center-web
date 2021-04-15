@@ -18,7 +18,10 @@ module.exports = {
         'implicit-arrow-linebreak': 'off',
         '@typescript-eslint/comma-dangle': 'off',
         'arrow-parens': 'off',
-        'arrow-body-style': 'off'
+        'arrow-body-style': 'off',
+        'consistent-return': 'off',
+        'class-methods-use-this': 'off',
+        'function-paren-newline': 'off'
       }
     }
   ]
