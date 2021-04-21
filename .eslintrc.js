@@ -13,7 +13,7 @@ module.exports = {
         'react/jsx-uses-react': 'off',
         'react/react-in-jsx-scope': 'off',
         'import/extensions': 'off',
-        'no-console': 'off',
+        'no-console': 'warn',
         'object-curly-newline': 'off',
         'implicit-arrow-linebreak': 'off',
         '@typescript-eslint/comma-dangle': 'off',
@@ -21,7 +21,9 @@ module.exports = {
         'arrow-body-style': 'off',
         'consistent-return': 'off',
         'class-methods-use-this': 'off',
-        'function-paren-newline': 'off'
+        'function-paren-newline': 'off',
+        'react/prop-types': 'off',
+        'import/no-extraneous-dependencies': 'off'
       }
     }
   ]
