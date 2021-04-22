@@ -9,7 +9,11 @@ export interface ApiParams {
   [index: string]: string;
 }
 
-export type ApiConfig = [ApiHostConfig, ApiParams?];
+export interface QueryParams {
+  [index: string]: string | number;
+}
+
+export type ApiConfig = [ApiHostConfig, ApiParams?, QueryParams?];
 
 export const LoginApi: ApiHostConfig = {
   serverType: ServerType.v1,

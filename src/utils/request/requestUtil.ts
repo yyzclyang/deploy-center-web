@@ -21,11 +21,15 @@ export function getServerUrl(serverType: ServerType): string {
  * @param apiConfig API 配置项
  */
 export function urlConfig2url(apiConfig: ApiConfig): string {
-  const [apiHostConfig, apiParams = {}] = apiConfig;
+  const [apiHostConfig, apiParams = {}, queryParams = {}] = apiConfig;
   const { serverType, apiPath } = apiHostConfig;
-  return Object.keys(apiParams).reduce((url, paramKey) => {
+  const apiUrl = Object.keys(apiParams).reduce((url, paramKey) => {
     return url.replace(new RegExp(`/:${paramKey}`), `/${apiParams[paramKey]}`);
   }, getServerUrl(serverType) + apiPath);
+  const querystring = Object.keys(queryParams)
+    .map(paramKey => `${paramKey}=${queryParams[paramKey]}`)
+    .join('&');
+  return apiUrl + (querystring ? `?${querystring}` : '');
 }
 
 /**
