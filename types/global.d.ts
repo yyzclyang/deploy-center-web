@@ -12,3 +12,8 @@ interface UserInfo {
   nickname: string;
   role: UserRole;
 }
+
+interface ReducerAction<T = string, K = any> {
+  type: T;
+  payload: K;
+}
