@@ -1,22 +1,30 @@
-import { FC } from 'react';
+import { FC, Suspense, lazy, useReducer } from 'react';
 import { Router, Route, Switch, Redirect } from 'react-router';
 import history from './utils/history';
-import Login from './pages/login';
-import Home from './pages/home';
+import { Context, initialState, reducer } from './store';
+import Loading from './components/loading';
+import 'normalize.css';
 import './app.module.scss';
 
-const App: FC = () => (
-  <Router history={history}>
-    <Switch>
-      <Route path="/home">
-        <Home />
-      </Route>
-      <Route path="/login">
-        <Login />
-      </Route>
-      <Redirect to="/home" />
-    </Switch>
-  </Router>
-);
+const Login = lazy(() => import('./pages/login'));
+const Home = lazy(() => import('./pages/home'));
+
+const App: FC = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <Context.Provider value={{ state, dispatch }}>
+      <Router history={history}>
+        <Suspense fallback={<Loading />}>
+          <Switch>
+            <Route path="/login" component={Login} />
+            <Route path="/" component={Home} />
+            <Redirect to="/" />
+          </Switch>
+        </Suspense>
+      </Router>
+    </Context.Provider>
+  );
+};
 
 export default App;

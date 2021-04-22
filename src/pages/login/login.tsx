@@ -1,10 +1,11 @@
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import localStorageUtil from '@/utils/localStorageUtil';
 import fetchData from '@/utils/request/fetchData';
 import { LoginApi } from '@/utils/request/apiConfigCenter';
 import history from '@/utils/history';
+import { Context } from '@/store';
 import style from './login.module.scss';
 
 interface LoginFormValue {
@@ -19,12 +20,19 @@ interface LoginResult {
 }
 
 const Login: FC = () => {
+  const { dispatch } = useContext(Context);
+
   const onLogin = (values: LoginFormValue) => {
     const { username, password, remember } = values;
     fetchData<LoginResult>([LoginApi], { username, password }).then(res => {
       if (remember) {
         localStorageUtil.set('__LOGIN_INFO__', res);
       }
+
+      const { token, userInfo } = res;
+      dispatch({ type: 'CHANGE_TOKEN', payload: token });
+      dispatch({ type: 'CHANGE_USER_INFO', payload: userInfo });
+
       history.push('/home');
       return res;
     });
