@@ -45,7 +45,9 @@ export function getRequestOptions(
     method: 'post',
     headers: {
       'content-type': 'application/json',
-      Authorization: `Bearer ${localStorageUtil.get('__LOGIN_INFO__')?.token}`
+      Authorization: `Bearer ${
+        options.token ?? localStorageUtil.get('__LOGIN_INFO__')?.token
+      }`
     }
   };
   const requestOptions = {

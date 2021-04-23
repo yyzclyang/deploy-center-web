@@ -6,17 +6,17 @@ import { urlConfig2url } from '@/utils/request/requestUtil';
 import { Context } from '@/store';
 
 const useRequest = <T = Record<string, any>>(
-  apiHostConfig: ApiConfig,
+  apiConfig: ApiConfig,
   data?: Record<string, any>,
   options?: RequestOptions
 ) => {
   const {
     state: { token }
   } = useContext(Context);
-  const url = urlConfig2url(apiHostConfig);
+  const url = urlConfig2url(apiConfig);
 
   return useSWR([url, token], () =>
-    fetchData<T>(apiHostConfig, data, { method: 'get', ...options })
+    fetchData<T>(apiConfig, data, { method: 'get', token, ...options })
   );
 };
 

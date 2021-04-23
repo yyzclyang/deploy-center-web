@@ -2,7 +2,7 @@ import { ApiConfig } from '@/utils/request/apiConfigCenter';
 import { getRequestOptions, urlConfig2url } from '@/utils/request/requestUtil';
 import history from '../history';
 
-export type RequestOptions = Omit<RequestInit, 'body'>;
+export type RequestOptions = Omit<RequestInit, 'body'> & { token?: string };
 
 const fetchData = <T = Record<string, any>>(
   apiConfig: ApiConfig,
