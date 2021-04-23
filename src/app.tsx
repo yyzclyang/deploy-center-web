@@ -4,10 +4,7 @@ import history from './utils/history';
 import { Context, initialState, reducer } from './store';
 import Loading from './components/loading';
 import 'normalize.css';
-import './app.module.scss';
-
-const Login = lazy(() => import('./pages/login'));
-const Home = lazy(() => import('./pages/home'));
+import styles from './app.module.scss';
 
 const App: FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -15,10 +12,13 @@ const App: FC = () => {
   return (
     <Context.Provider value={{ state, dispatch }}>
       <Router history={history}>
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<Loading className={styles.loading} />}>
           <Switch>
-            <Route path="/login" component={Login} />
-            <Route path="/" component={Home} />
+            <Route
+              path="/login"
+              component={lazy(() => import('./pages/login'))}
+            />
+            <Route path="/" component={lazy(() => import('./pages/home'))} />
             <Redirect to="/" />
           </Switch>
         </Suspense>

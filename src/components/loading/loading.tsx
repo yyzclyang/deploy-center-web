@@ -1,10 +1,36 @@
-import { LoadingOutlined } from '@ant-design/icons';
-import style from './loading.module.scss';
+import { CSSProperties, FC } from 'react';
+import { CloudDownloadOutlined, LoadingOutlined } from '@ant-design/icons';
+import styles from './loading.module.scss';
 
-const Loading = () => {
+export enum LoadingType {
+  NORMAL = 'normal',
+  FETCHING = 'fetching'
+}
+
+interface LoadingProps {
+  className?: string;
+  style?: CSSProperties;
+  type?: LoadingType;
+}
+
+const Loading: FC<LoadingProps> = props => {
+  const { className, style, type } = props;
+
   return (
-    <div className={style.wrapper}>
-      <LoadingOutlined style={{ fontSize: '40px', color: '#666' }} />
+    <div
+      style={style}
+      className={[styles.wrapper, className].filter(v => v).join(' ')}
+    >
+      {(() => {
+        switch (type) {
+          case LoadingType.NORMAL:
+            return <LoadingOutlined className={styles.loading} />;
+          case LoadingType.FETCHING:
+            return <CloudDownloadOutlined className={styles.loading} />;
+          default:
+            return <LoadingOutlined className={styles.loading} />;
+        }
+      })()}
     </div>
   );
 };

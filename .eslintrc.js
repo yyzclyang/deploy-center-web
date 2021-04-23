@@ -23,7 +23,8 @@ module.exports = {
         'class-methods-use-this': 'off',
         'function-paren-newline': 'off',
         'react/prop-types': 'off',
-        'import/no-extraneous-dependencies': 'off'
+        'import/no-extraneous-dependencies': 'off',
+        'no-nested-ternary': 'warn'
       }
     }
   ]

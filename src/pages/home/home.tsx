@@ -1,39 +1,42 @@
-import { FC } from 'react';
+import { FC, Suspense, lazy } from 'react';
 import { Redirect, Route, Switch } from 'react-router';
 import { NavLink } from 'react-router-dom';
-import Repository from '@/pages/repository';
-import Unit from '@/pages/unit';
-import Task from '@/pages/task';
-import Introduction from '@/pages/introduction';
 import Header from './components/header';
-import style from './home.module.scss';
+import styles from './home.module.scss';
 
 const Home: FC = () => {
   return (
-    <div className={style.page}>
-      <Header className={style.header} />
-      <div className={style.main}>
-        <aside className={style.aside}>
-          <NavLink to="/repositories">repositories</NavLink>
-          <NavLink to="/units">units</NavLink>
-          <NavLink to="/tasks">tasks</NavLink>
+    <div className={styles.page}>
+      <Header className={styles.header} />
+      <div className={styles['main-region']}>
+        <aside className={styles.aside}>
+          <ul className={styles['route-ul']}>
+            {['repositories', 'units', 'tasks'].map(route => (
+              <li className={styles['route-li']} key={route}>
+                <NavLink className={styles['route-link']} to={`/${route}`}>
+                  {route}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
         </aside>
-        <main className="content">
-          <Switch>
-            <Route exact path="/">
-              <Introduction />
-            </Route>
-            <Route path="/repositories">
-              <Repository />
-            </Route>
-            <Route path="/units">
-              <Unit />
-            </Route>
-            <Route path="/tasks">
-              <Task />
-            </Route>
-            <Redirect to="/" />
-          </Switch>
+        <main className={styles['main-content']}>
+          <Suspense fallback={null}>
+            <Switch>
+              <Route
+                exact
+                path="/"
+                component={lazy(() => import('../introduction'))}
+              />
+              <Route
+                path="/repositories"
+                component={lazy(() => import('../repository'))}
+              />
+              <Route path="/units" component={lazy(() => import('../unit'))} />
+              <Route path="/tasks" component={lazy(() => import('../task'))} />
+              <Redirect to="/" />
+            </Switch>
+          </Suspense>
         </main>
       </div>
     </div>

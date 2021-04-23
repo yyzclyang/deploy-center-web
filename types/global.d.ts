@@ -13,6 +13,8 @@ interface UserInfo {
   role: UserRole;
 }
 
+type RepositoryType = 'https' | 'ssh';
+
 interface ReducerAction<T = string, K = any> {
   type: T;
   payload: K;
