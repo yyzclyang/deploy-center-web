@@ -1,7 +1,7 @@
 import { FC, Suspense, lazy, useReducer } from 'react';
 import { Router, Route, Switch, Redirect } from 'react-router';
 import history from './utils/history';
-import { Context, initialState, reducer } from './store';
+import { GlobalContext, initialState, reducer } from './store';
 import Loading from './components/loading';
 import 'normalize.css';
 import styles from './app.module.scss';
@@ -10,7 +10,7 @@ const App: FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
-    <Context.Provider value={{ state, dispatch }}>
+    <GlobalContext.Provider value={{ state, dispatch }}>
       <Router history={history}>
         <Suspense fallback={<Loading className={styles.loading} />}>
           <Switch>
@@ -23,7 +23,7 @@ const App: FC = () => {
           </Switch>
         </Suspense>
       </Router>
-    </Context.Provider>
+    </GlobalContext.Provider>
   );
 };
 

@@ -29,3 +29,13 @@ export const GetRepository: ApiHostConfig = {
   serverType: ServerType.v1,
   apiPath: '/repositories/:id'
 };
+
+export const CreateRepository: ApiHostConfig = {
+  serverType: ServerType.v1,
+  apiPath: '/repositories'
+};
+
+export const UpdateRepository: ApiHostConfig = {
+  serverType: ServerType.v1,
+  apiPath: '/repositories/:id'
+};

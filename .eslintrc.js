@@ -24,7 +24,11 @@ module.exports = {
         'function-paren-newline': 'off',
         'react/prop-types': 'off',
         'import/no-extraneous-dependencies': 'off',
-        'no-nested-ternary': 'warn'
+        'no-nested-ternary': 'warn',
+        'react/jsx-wrap-multilines': [
+          'error',
+          { arrow: true, return: true, declaration: true }
+        ]
       }
     }
   ]
