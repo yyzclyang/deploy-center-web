@@ -12,6 +12,16 @@ interface UserInfo {
   nickname: string;
   role: UserRole;
 }
+interface RepositoryInfo {
+  id: string;
+  repositoryName: string;
+  repositoryType: ResponseType;
+  repositoryUrl: string;
+}
+interface BranchInfo {
+  branch: string;
+  commit: string;
+}
 
 type RepositoryType = 'https' | 'ssh';
 

@@ -39,3 +39,18 @@ export const UpdateRepository: ApiHostConfig = {
   serverType: ServerType.v1,
   apiPath: '/repositories/:id'
 };
+
+export const GetUnits: ApiHostConfig = {
+  serverType: ServerType.v1,
+  apiPath: '/units'
+};
+
+export const UpdateUnits: ApiHostConfig = {
+  serverType: ServerType.v1,
+  apiPath: '/units/:id'
+};
+
+export const GetBranches: ApiHostConfig = {
+  serverType: ServerType.v1,
+  apiPath: '/branches/:id'
+};

@@ -14,7 +14,7 @@ const fetchData = <T = Record<string, any>>(
   options?: RequestOptions
 ) => {
   const requestUrl = urlConfig2url(apiConfig);
-  const { showLoadingModal = true } = options;
+  const showLoadingModal = options?.showLoadingModal ?? true;
 
   if (showLoadingModal) {
     showLoading();
