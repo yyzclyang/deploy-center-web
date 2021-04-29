@@ -31,11 +31,11 @@ const RepositoryForm: FC<EditRepositoryProps> = props => {
   };
 
   const onSubmit = () => {
-    form
+    return form
       .validateFields()
       .then((values: RepositoryFormValues) => {
         form.resetFields();
-        (() => {
+        return (() => {
           if (repository) {
             return fetchData(
               [UpdateRepository, { id: repository.id }],

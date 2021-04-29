@@ -1,13 +1,13 @@
 import { FC, Suspense, lazy, useReducer } from 'react';
 import { Router, Route, Switch, Redirect } from 'react-router';
-import history from './utils/history';
-import { GlobalContext, initialState, reducer } from './store';
-import Loading from './components/loading';
 import 'normalize.css';
+import history from './utils/history';
+import { GlobalContext, GlobalReducer, initialState, reducer } from './store';
+import Loading from './components/loading';
 import styles from './app.module.scss';
 
 const App: FC = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer<GlobalReducer>(reducer, initialState);
 
   return (
     <GlobalContext.Provider value={{ state, dispatch }}>

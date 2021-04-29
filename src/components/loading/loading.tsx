@@ -4,7 +4,7 @@ import styles from './loading.module.scss';
 
 export enum LoadingType {
   NORMAL = 'normal',
-  FETCHING = 'fetching'
+  DOWNLOAD = 'download'
 }
 
 interface LoadingProps {
@@ -25,7 +25,7 @@ const Loading: FC<LoadingProps> = props => {
         switch (type) {
           case LoadingType.NORMAL:
             return <LoadingOutlined className={styles.loading} />;
-          case LoadingType.FETCHING:
+          case LoadingType.DOWNLOAD:
             return <CloudDownloadOutlined className={styles.loading} />;
           default:
             return <LoadingOutlined className={styles.loading} />;

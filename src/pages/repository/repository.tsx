@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from 'react';
+import { FC, useState } from 'react';
 import { Button, Table } from 'antd';
 import useRequest from '@/utils/request/useRequest';
 import { GetRepositories } from '@/utils/request/apiConfigCenter';
@@ -6,7 +6,6 @@ import Error, { ErrorType } from '@/components/error';
 import Loading from '@/components/loading';
 import RepositoryForm from './components/repositoryForm';
 import styles from './repository.module.scss';
-import { GlobalContext } from '@/store';
 
 export interface RepositoryData {
   id: string;
@@ -31,7 +30,6 @@ const Repository: FC = () => {
     repositoryFormData,
     setRepositoryFormData
   ] = useState<null | RepositoryData>(null);
-  const { dispatch } = useContext(GlobalContext);
 
   const TableConfig = [
     {
@@ -107,15 +105,14 @@ const Repository: FC = () => {
     }
   ];
 
-  console.log('Boolean(editType)', Boolean(editType), editType);
   return (
     <div className={styles['main-content']}>
       <div className={styles['operate-wrapper']}>
         <Button
           type="primary"
           onClick={() => {
-            dispatch({ type: 'CHANGE_LOADING_COUNT', payload: 1 });
-            // setEditType('add');
+            setRepositoryFormData(null);
+            setEditType('add');
           }}
         >
           add repository
@@ -142,15 +139,17 @@ const Repository: FC = () => {
         )}
       </div>
 
-      <RepositoryForm
-        title={`${editType} repository`}
-        visible={Boolean(editType)}
-        repository={repositoryFormData}
-        onClose={() => {
-          setEditType(null);
-          setRepositoryFormData(null);
-        }}
-      />
+      {Boolean(editType) && (
+        <RepositoryForm
+          title={`${editType} repository`}
+          visible={Boolean(editType)}
+          repository={repositoryFormData}
+          onClose={() => {
+            setEditType(null);
+            setRepositoryFormData(null);
+          }}
+        />
+      )}
     </div>
   );
 };

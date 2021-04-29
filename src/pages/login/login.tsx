@@ -5,7 +5,7 @@ import localStorageUtil from '@/utils/localStorageUtil';
 import fetchData from '@/utils/request/fetchData';
 import { LoginApi } from '@/utils/request/apiConfigCenter';
 import history from '@/utils/history';
-import { Context } from '@/store';
+import { GlobalContext } from '@/store';
 import style from './login.module.scss';
 
 interface LoginFormValue {
@@ -20,7 +20,7 @@ interface LoginResult {
 }
 
 const Login: FC = () => {
-  const { dispatch } = useContext(Context);
+  const { dispatch } = useContext(GlobalContext);
 
   const onLogin = (values: LoginFormValue) => {
     const { username, password, remember } = values;
