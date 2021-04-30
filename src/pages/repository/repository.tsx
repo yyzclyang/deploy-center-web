@@ -1,9 +1,14 @@
 import { FC, useState } from 'react';
-import { Button, Table } from 'antd';
-import useRequest from '@/utils/request/useRequest';
-import { GetRepositories } from '@/utils/request/apiConfigCenter';
+import { Button, message, Table } from 'antd';
+import useRequest, { mutateDate } from '@/utils/request/useRequest';
+import {
+  CreateRepository,
+  GetRepositories,
+  UpdateRepository
+} from '@/utils/request/apiConfigCenter';
 import Error, { ErrorType } from '@/components/error';
 import Loading from '@/components/loading';
+import fetchData from '@/utils/request/fetchData';
 import RepositoryForm from './components/repositoryForm';
 import styles from './repository.module.scss';
 
@@ -105,6 +110,42 @@ const Repository: FC = () => {
     }
   ];
 
+  const onRepositoryFormClose = () => {
+    setEditType(null);
+    setRepositoryFormData(null);
+  };
+
+  const onRepositoryFormSubmit = (values: Partial<RepositoryData>) => {
+    return (() => {
+      if (repositoryFormData) {
+        return fetchData(
+          [UpdateRepository, { id: repositoryFormData.id }],
+          values,
+          {
+            method: 'PATCH'
+          }
+        );
+      }
+      return fetchData([CreateRepository], values);
+    })()
+      .then(
+        () => {
+          message.success(
+            `${repositoryFormData ? 'update' : 'create'} repository success`
+          );
+          mutateDate([GetRepositories]);
+        },
+        () => {
+          message.error(
+            `${repositoryFormData ? 'update' : 'create'} repository fail`
+          );
+        }
+      )
+      .finally(() => {
+        onRepositoryFormClose();
+      });
+  };
+
   return (
     <div className={styles['main-content']}>
       <div className={styles['operate-wrapper']}>
@@ -144,10 +185,8 @@ const Repository: FC = () => {
           title={`${editType} repository`}
           visible={Boolean(editType)}
           repository={repositoryFormData}
-          onClose={() => {
-            setEditType(null);
-            setRepositoryFormData(null);
-          }}
+          onSubmit={onRepositoryFormSubmit}
+          onClose={onRepositoryFormClose}
         />
       )}
     </div>

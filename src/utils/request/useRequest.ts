@@ -1,4 +1,4 @@
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { useContext } from 'react';
 import { ApiConfig } from '@/utils/request/apiConfigCenter';
 import fetchData, { RequestOptions } from '@/utils/request/fetchData';
@@ -15,9 +15,19 @@ const useRequest = <T = Record<string, any>>(
   } = useContext(GlobalContext);
   const url = urlConfig2url(apiConfig);
 
-  return useSWR([url, token], () =>
-    fetchData<T>(apiConfig, data, { method: 'get', token, ...options })
+  return useSWR([url], () =>
+    fetchData<T>(apiConfig, data, {
+      method: 'get',
+      token,
+      ...options
+    })
   );
+};
+
+export const mutateDate = (apiConfig: ApiConfig, data?: any) => {
+  const url = urlConfig2url(apiConfig);
+
+  return data ? mutate([url], data, false) : mutate([url]);
 };
 
 export default useRequest;

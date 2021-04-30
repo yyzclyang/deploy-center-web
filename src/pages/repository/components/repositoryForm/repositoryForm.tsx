@@ -1,11 +1,6 @@
 import { FC } from 'react';
 import { RepositoryData } from '@/pages/repository';
-import { Col, Modal, Form, Input, message, Row, Select } from 'antd';
-import fetchData from '@/utils/request/fetchData';
-import {
-  CreateRepository,
-  UpdateRepository
-} from '@/utils/request/apiConfigCenter';
+import { Col, Modal, Form, Input, Row, Select } from 'antd';
 
 const { Option } = Select;
 
@@ -13,6 +8,7 @@ interface EditRepositoryProps {
   repository?: RepositoryData;
   title: string;
   visible: boolean;
+  onSubmit: (values: RepositoryFormValues) => void;
   onClose: () => void;
 }
 
@@ -35,33 +31,7 @@ const RepositoryForm: FC<EditRepositoryProps> = props => {
       .validateFields()
       .then((values: RepositoryFormValues) => {
         form.resetFields();
-        return (() => {
-          if (repository) {
-            return fetchData(
-              [UpdateRepository, { id: repository.id }],
-              values,
-              {
-                method: 'PATCH'
-              }
-            );
-          }
-          return fetchData([CreateRepository], values);
-        })()
-          .then(
-            () => {
-              message.success(
-                `${repository ? 'update' : 'create'} repository success`
-              );
-            },
-            () => {
-              message.error(
-                `${repository ? 'update' : 'create'} repository fail`
-              );
-            }
-          )
-          .finally(() => {
-            props.onClose();
-          });
+        return props.onSubmit(values);
       })
       .catch(info => {
         console.error('Validate Failed:', info);

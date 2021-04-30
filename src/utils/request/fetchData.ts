@@ -20,12 +20,8 @@ const fetchData = <T = Record<string, any>>(
     showLoading();
   }
 
-  return fetch(requestUrl, getRequestOptions(options ?? {}, data)).then(
-    response => {
-      if (showLoadingModal) {
-        hideLoading();
-      }
-
+  return fetch(requestUrl, getRequestOptions(options ?? {}, data))
+    .then(response => {
       if (response.ok) {
         return (response.json() as unknown) as T;
       }
@@ -33,14 +29,12 @@ const fetchData = <T = Record<string, any>>(
         history.push('/login');
       }
       return Promise.reject(response);
-    },
-    reason => {
+    })
+    .finally(() => {
       if (showLoadingModal) {
         hideLoading();
       }
-      throw reason;
-    }
-  );
+    });
 };
 
 export default fetchData;
