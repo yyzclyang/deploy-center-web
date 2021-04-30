@@ -1,15 +1,15 @@
 import { FC, MouseEventHandler, useState } from 'react';
-import { message, Select } from 'antd';
+import { Select } from 'antd';
 import fetchData from '@/utils/request/fetchData';
-import { GetBranches, UpdateUnits } from '@/utils/request/apiConfigCenter';
+import { GetBranches } from '@/utils/request/apiConfigCenter';
 import styles from './asyncBranchSelect.module.scss';
 
 const { Option } = Select;
 
 interface AsyncBranchSelectProps {
-  defaultValue: string;
-  unitId: string;
+  value: string;
   repositoryId: string;
+  onChange: (branch: string) => void;
 }
 
 interface BranchesInfo {
@@ -17,8 +17,8 @@ interface BranchesInfo {
 }
 
 const AsyncBranchSelect: FC<AsyncBranchSelectProps> = props => {
-  const { defaultValue, repositoryId, unitId } = props;
-  const [branchList, setBranchList] = useState([defaultValue]);
+  const { value, repositoryId, onChange } = props;
+  const [branchList, setBranchList] = useState([value]);
 
   const onSelectClick: MouseEventHandler<HTMLSpanElement> = event => {
     const isSelect = (event.target as HTMLSpanElement).tagName === 'SPAN';
@@ -34,27 +34,12 @@ const AsyncBranchSelect: FC<AsyncBranchSelectProps> = props => {
     }
   };
 
-  const onBranchChange = (branch: string) => {
-    fetchData(
-      [UpdateUnits, { id: unitId }],
-      { branch },
-      { method: 'PATCH' }
-    ).then(
-      () => {
-        message.success('update unit branch success');
-      },
-      () => {
-        message.error('update unit branch fail');
-      }
-    );
-  };
-
   return (
     <Select
       className={styles.select}
-      defaultValue={defaultValue}
+      value={value}
       onClick={onSelectClick}
-      onChange={onBranchChange}
+      onChange={onChange}
     >
       {branchList.map(branch => (
         <Option key={branch} value={branch}>

@@ -1,12 +1,12 @@
 import { FC, useState } from 'react';
-import { Button, Switch, Table, Tag } from 'antd';
-import useRequest from '@/utils/request/useRequest';
+import { Button, message, Switch, Table, Tag } from 'antd';
+import useRequest, { mutateDate } from '@/utils/request/useRequest';
 import { GetUnits, UpdateUnits } from '@/utils/request/apiConfigCenter';
 import Error, { ErrorType } from '@/components/error';
 import Loading from '@/components/loading';
-import styles from './unit.module.scss';
-import AsyncBranchSelect from '@/pages/unit/components/asyncBranchSelect';
 import fetchData from '@/utils/request/fetchData';
+import AsyncBranchSelect from './components/asyncBranchSelect';
+import styles from './unit.module.scss';
 
 export enum UnitStatus {
   NORMAL = 'normal',
@@ -44,6 +44,29 @@ const Unit: FC = () => {
   const { data, error } = useRequest<UnitResponse>([GetUnits]);
   const [editType, setEditType] = useState<null | 'edit' | 'add'>(null);
   const [unitFormData, setUnitFormData] = useState<null | UnitData>(null);
+
+  const updateUnit = async (unitId: string, updateData: Partial<UnitData>) => {
+    await mutateDate([GetUnits], {
+      units: data.units.map(unit => {
+        if (unit.id === unitId) {
+          return { ...unit, ...updateData };
+        }
+        return unit;
+      })
+    });
+
+    return fetchData([UpdateUnits, { id: unitId }], updateData, {
+      method: 'PATCH'
+    }).then(
+      () => {
+        message.success('update unit success');
+        mutateDate([GetUnits]);
+      },
+      () => {
+        message.error('update unit fail');
+      }
+    );
+  };
 
   const TableConfig = [
     {
@@ -87,9 +110,11 @@ const Unit: FC = () => {
       render: ({ branch, id, repository: { id: repositoryId } }: UnitData) => {
         return (
           <AsyncBranchSelect
-            defaultValue={branch}
-            unitId={id}
+            value={branch}
             repositoryId={repositoryId}
+            onChange={(value: string) => {
+              return updateUnit(id, { branch: value });
+            }}
           />
         );
       }
@@ -193,12 +218,14 @@ const Unit: FC = () => {
       key: 'unitStatus',
       fixed: 'right',
       width: 35,
-      render: ({ unitStatus }: UnitData) => {
+      render: ({ id, unitStatus }: UnitData) => {
         return (
           <Switch
             checked={unitStatus === UnitStatus.LOCKED}
-            onChange={() => {
-              console.log('change unit status');
+            onChange={value => {
+              return updateUnit(id, {
+                unitStatus: value ? UnitStatus.LOCKED : UnitStatus.NORMAL
+              });
             }}
           />
         );
@@ -210,9 +237,12 @@ const Unit: FC = () => {
       fixed: 'right',
       width: 30,
       render: (unit: UnitData) => {
+        const { unitStatus } = unit;
+
         return (
           <Button
             type="primary"
+            disabled={unitStatus === UnitStatus.LOCKED}
             onClick={() => {
               setUnitFormData(unit);
               setEditType('edit');
