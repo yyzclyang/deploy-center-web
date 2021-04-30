@@ -9,6 +9,8 @@ module.exports = {
       },
       extends: ['airbnb-typescript'],
       rules: {
+        '@typescript-eslint/comma-dangle': 'off',
+        '@typescript-eslint/indent': 'off',
         'import/prefer-default-export': 'off',
         'react/jsx-uses-react': 'off',
         'react/react-in-jsx-scope': 'off',
@@ -16,7 +18,6 @@ module.exports = {
         'no-console': 'warn',
         'object-curly-newline': 'off',
         'implicit-arrow-linebreak': 'off',
-        '@typescript-eslint/comma-dangle': 'off',
         'arrow-parens': 'off',
         'arrow-body-style': 'off',
         'consistent-return': 'off',

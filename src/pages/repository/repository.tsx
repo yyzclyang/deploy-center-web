@@ -24,7 +24,7 @@ export interface RepositoryData {
   updateAt: Date;
 }
 
-interface RepositoryResponse {
+export interface RepositoryResponse {
   repositories: Array<RepositoryData>;
 }
 
@@ -127,23 +127,20 @@ const Repository: FC = () => {
         );
       }
       return fetchData([CreateRepository], values);
-    })()
-      .then(
-        () => {
-          message.success(
-            `${repositoryFormData ? 'update' : 'create'} repository success`
-          );
-          mutateDate([GetRepositories]);
-        },
-        () => {
-          message.error(
-            `${repositoryFormData ? 'update' : 'create'} repository fail`
-          );
-        }
-      )
-      .finally(() => {
+    })().then(
+      () => {
+        message.success(
+          `${repositoryFormData ? 'update' : 'create'} repository success`
+        );
         onRepositoryFormClose();
-      });
+        mutateDate([GetRepositories]);
+      },
+      () => {
+        message.error(
+          `${repositoryFormData ? 'update' : 'create'} repository fail`
+        );
+      }
+    );
   };
 
   return (
