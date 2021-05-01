@@ -59,3 +59,13 @@ export const GetBranches: ApiHostConfig = {
   serverType: ServerType.v1,
   apiPath: '/branches/:id'
 };
+
+export const GetTasks: ApiHostConfig = {
+  serverType: ServerType.v1,
+  apiPath: '/tasks'
+};
+
+export const CreateTask: ApiHostConfig = {
+  serverType: ServerType.v1,
+  apiPath: '/tasks'
+};

@@ -2,8 +2,10 @@ import { FC, useState } from 'react';
 import { Button, message, Switch, Table, Tag } from 'antd';
 import useRequest, { mutateDate } from '@/utils/request/useRequest';
 import {
+  CreateTask,
   CreateUnit,
   GetBranches,
+  GetTasks,
   GetUnits,
   UpdateUnits
 } from '@/utils/request/apiConfigCenter';
@@ -49,7 +51,6 @@ const Unit: FC = () => {
   };
 
   const onUnitFormSubmit = (values: Partial<UnitFormValues>) => {
-    console.log(values);
     return (() => {
       if (unitFormData) {
         return updateUnit(unitFormData.id, values);
@@ -63,6 +64,18 @@ const Unit: FC = () => {
       },
       () => {
         message.error(`${unitFormData ? 'update' : 'create'} unit fail`);
+      }
+    );
+  };
+
+  const onCreateTask = (unit: UnitData) => {
+    return fetchData([CreateTask], { unitId: unit.id }).then(
+      () => {
+        message.success('create task success');
+        mutateDate([GetTasks]);
+      },
+      () => {
+        message.error('create task fail');
       }
     );
   };
@@ -131,8 +144,6 @@ const Unit: FC = () => {
               });
             }}
             onChange={value => {
-              console.log('value', value);
-              return;
               if (value === branch) {
                 return;
               }
@@ -280,7 +291,7 @@ const Unit: FC = () => {
               className={styles['action-button']}
               disabled={unitStatus === UnitStatus.LOCKED}
               onClick={() => {
-                console.log('deploy');
+                return onCreateTask(unit);
               }}
             >
               deploy
