@@ -244,7 +244,7 @@ const Unit: FC = () => {
       key: 'updateAt',
       width: 50,
       render: (repository: UnitData) => {
-        return new Date(repository.createAt).toLocaleString();
+        return new Date(repository.updateAt).toLocaleString();
       }
     },
     {
