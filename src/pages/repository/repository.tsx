@@ -10,23 +10,8 @@ import Error, { ErrorType } from '@/components/error';
 import Loading from '@/components/loading';
 import fetchData from '@/utils/request/fetchData';
 import RepositoryForm from './components/repositoryForm';
+import { RepositoryData, RepositoryResponse } from './types';
 import styles from './repository.module.scss';
-
-export interface RepositoryData {
-  id: string;
-  index: number;
-  repositoryName: string;
-  repositoryType: RepositoryType;
-  repositoryUrl: string;
-  creator: UserInfo;
-  updater: UserInfo;
-  createAt: Date;
-  updateAt: Date;
-}
-
-export interface RepositoryResponse {
-  repositories: Array<RepositoryData>;
-}
 
 const Repository: FC = () => {
   const { data, error } = useRequest<RepositoryResponse>([GetRepositories]);
@@ -86,7 +71,7 @@ const Repository: FC = () => {
       key: 'updateAt',
       width: 120,
       render: (repository: RepositoryData) => {
-        return new Date(repository.createAt).toLocaleString();
+        return new Date(repository.updateAt).toLocaleString();
       }
     },
     {

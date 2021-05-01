@@ -3,8 +3,8 @@ import { Col, Modal, Form, Input, Row, Select } from 'antd';
 import AsyncSelect from '@/pages/unit/components/asyncSelect';
 import fetchData from '@/utils/request/fetchData';
 import { GetBranches, GetRepositories } from '@/utils/request/apiConfigCenter';
-import { RepositoryResponse } from '@/pages/repository';
 import { UnitStatus, UnitType } from '@/utils/varible';
+import { RepositoryResponse } from '@/pages/repository/types';
 import {
   BranchesInfo,
   UnitData,

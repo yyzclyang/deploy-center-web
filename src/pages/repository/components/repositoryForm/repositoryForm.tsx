@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import { RepositoryData } from '@/pages/repository';
 import { Col, Modal, Form, Input, Row, Select } from 'antd';
 import { RepositoryType } from '@/utils/varible';
+import { RepositoryData, RepositoryFormValues } from '../../types';
 
 const { Option } = Select;
 
@@ -11,12 +11,6 @@ interface EditRepositoryProps {
   visible: boolean;
   onSubmit: (values: RepositoryFormValues) => void;
   onClose: () => void;
-}
-
-interface RepositoryFormValues {
-  repositoryName: string;
-  repositoryType: RepositoryType;
-  repositoryUrl: string;
 }
 
 const RepositoryForm: FC<EditRepositoryProps> = props => {
