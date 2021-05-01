@@ -12,12 +12,13 @@ interface OptionItem {
 interface AsyncBranchSelectProps {
   value?: string;
   placeholder?: string;
+  disabled?: boolean;
   onFetchListData: () => Promise<Array<OptionItem>>;
   onChange?: (value: string) => void;
 }
 
 const AsyncSelect: FC<AsyncBranchSelectProps> = props => {
-  const { value, placeholder, onFetchListData, onChange } = props;
+  const { value, placeholder, disabled, onFetchListData, onChange } = props;
 
   const [itemList, setItemList] = useState<Array<OptionItem>>([]);
 
@@ -37,6 +38,7 @@ const AsyncSelect: FC<AsyncBranchSelectProps> = props => {
       className={styles.select}
       placeholder={placeholder}
       value={value}
+      disabled={disabled}
       onDropdownVisibleChange={onDropdownVisibleChange}
       onChange={onChange}
     >

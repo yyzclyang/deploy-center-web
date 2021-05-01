@@ -14,11 +14,15 @@
   .table-wrapper {
     width: 100%;
 
+    .action-button {
+      margin: 0 4px;
+    }
+
     .script-tag {
       margin: 2px 0;
     }
 
-    .wrap{
+    .wrap {
       white-space: normal;
     }
   }

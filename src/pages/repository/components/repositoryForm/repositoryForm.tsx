@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { RepositoryData } from '@/pages/repository';
 import { Col, Modal, Form, Input, Row, Select } from 'antd';
+import { RepositoryType } from '@/utils/varible';
 
 const { Option } = Select;
 
@@ -75,8 +76,12 @@ const RepositoryForm: FC<EditRepositoryProps> = props => {
               ]}
             >
               <Select placeholder="Please select a repository type">
-                <Option value="https">HTTPS</Option>
-                <Option value="ssh">SSH</Option>
+                <Option value={RepositoryType.HTTPS}>
+                  {RepositoryType.HTTPS.toUpperCase()}
+                </Option>
+                <Option value={RepositoryType.SSH}>
+                  {RepositoryType.SSH.toUpperCase()}
+                </Option>
               </Select>
             </Form.Item>
           </Col>

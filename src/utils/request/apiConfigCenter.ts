@@ -45,6 +45,11 @@ export const GetUnits: ApiHostConfig = {
   apiPath: '/units'
 };
 
+export const CreateUnit: ApiHostConfig = {
+  serverType: ServerType.v1,
+  apiPath: '/units'
+};
+
 export const UpdateUnits: ApiHostConfig = {
   serverType: ServerType.v1,
   apiPath: '/units/:id'

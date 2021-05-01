@@ -1,40 +1,20 @@
 import { FC, useState } from 'react';
 import { Button, message, Switch, Table, Tag } from 'antd';
 import useRequest, { mutateDate } from '@/utils/request/useRequest';
-import { GetUnits, UpdateUnits } from '@/utils/request/apiConfigCenter';
+import {
+  CreateUnit,
+  GetBranches,
+  GetUnits,
+  UpdateUnits
+} from '@/utils/request/apiConfigCenter';
 import Error, { ErrorType } from '@/components/error';
 import Loading from '@/components/loading';
 import fetchData from '@/utils/request/fetchData';
-import AsyncBranchSelect from './components/asyncBranchSelect';
+import { UnitStatus, UnitType } from '@/utils/varible';
+import UnitForm from './components/unitForm';
+import AsyncSelect from './components/asyncSelect';
+import { BranchesInfo, UnitData, UnitFormValues } from './types';
 import styles from './unit.module.scss';
-
-export enum UnitStatus {
-  NORMAL = 'normal',
-  LOCKED = 'locked'
-}
-export enum UnitType {
-  TEST = 'test',
-  PRODUCTION = 'production'
-}
-
-export interface UnitData {
-  id: string;
-  index: number;
-  unitName: string;
-  unitStatus: UnitStatus;
-  unitType: UnitType;
-  repository: RepositoryInfo;
-  branch: string;
-  repositoryFolder: string;
-  buildFolder: string;
-  buildScripts: string[];
-  resourceZipFolder: string;
-  uploadTargetFolder: string;
-  creator: UserInfo;
-  updater: UserInfo;
-  createAt: Date;
-  updateAt: Date;
-}
 
 interface UnitResponse {
   units: Array<UnitData>;
@@ -45,7 +25,15 @@ const Unit: FC = () => {
   const [editType, setEditType] = useState<null | 'edit' | 'add'>(null);
   const [unitFormData, setUnitFormData] = useState<null | UnitData>(null);
 
-  const updateUnit = async (unitId: string, updateData: Partial<UnitData>) => {
+  const onUnitFormClose = () => {
+    setEditType(null);
+    setUnitFormData(null);
+  };
+
+  const updateUnit = async (
+    unitId: string,
+    updateData: Partial<UnitFormValues>
+  ) => {
     await mutateDate([GetUnits], {
       units: data.units.map(unit => {
         if (unit.id === unitId) {
@@ -57,13 +45,24 @@ const Unit: FC = () => {
 
     return fetchData([UpdateUnits, { id: unitId }], updateData, {
       method: 'PATCH'
-    }).then(
+    });
+  };
+
+  const onUnitFormSubmit = (values: Partial<UnitFormValues>) => {
+    console.log(values);
+    return (() => {
+      if (unitFormData) {
+        return updateUnit(unitFormData.id, values);
+      }
+      return fetchData([CreateUnit], values);
+    })().then(
       () => {
-        message.success('update unit success');
+        message.success(`${unitFormData ? 'update' : 'create'} unit success`);
+        onUnitFormClose();
         mutateDate([GetUnits]);
       },
       () => {
-        message.error('update unit fail');
+        message.error(`${unitFormData ? 'update' : 'create'} unit fail`);
       }
     );
   };
@@ -107,12 +106,36 @@ const Unit: FC = () => {
       title: 'branch',
       key: 'branch',
       width: 45,
-      render: ({ branch, id, repository: { id: repositoryId } }: UnitData) => {
+      render: ({
+        unitStatus,
+        branch,
+        id,
+        repository: { id: repositoryId }
+      }: UnitData) => {
         return (
-          <AsyncBranchSelect
+          <AsyncSelect
             value={branch}
-            repositoryId={repositoryId}
-            onChange={(value: string) => {
+            disabled={unitStatus === UnitStatus.LOCKED}
+            onFetchListData={() => {
+              return fetchData<BranchesInfo>(
+                [GetBranches, { id: repositoryId }],
+                undefined,
+                {
+                  method: 'get'
+                }
+              ).then(({ branches }) => {
+                return branches.map(branchInfo => ({
+                  label: branchInfo.branch,
+                  value: branchInfo.branch
+                }));
+              });
+            }}
+            onChange={value => {
+              console.log('value', value);
+              return;
+              if (value === branch) {
+                return;
+              }
               return updateUnit(id, { branch: value });
             }}
           />
@@ -135,7 +158,7 @@ const Unit: FC = () => {
       title: 'buildFolder',
       dataIndex: 'buildFolder',
       key: 'buildFolder',
-      width: 35
+      width: 40
     },
     {
       title: 'buildScripts',
@@ -160,7 +183,7 @@ const Unit: FC = () => {
     {
       title: 'resourceZipFolder',
       key: 'resourceZipFolder',
-      width: 50,
+      width: 55,
       render: ({ resourceZipFolder }: UnitData) => {
         return (
           <Tag color="volcano" className={styles.wrap}>
@@ -172,7 +195,7 @@ const Unit: FC = () => {
     {
       title: 'uploadTargetFolder',
       key: 'uploadTargetFolder',
-      width: 55,
+      width: 60,
       render: ({ uploadTargetFolder }: UnitData) => {
         return (
           <Tag color="magenta" className={styles.wrap}>
@@ -235,21 +258,34 @@ const Unit: FC = () => {
       title: 'Action',
       key: 'operation',
       fixed: 'right',
-      width: 30,
+      width: 65,
       render: (unit: UnitData) => {
         const { unitStatus } = unit;
 
         return (
-          <Button
-            type="primary"
-            disabled={unitStatus === UnitStatus.LOCKED}
-            onClick={() => {
-              setUnitFormData(unit);
-              setEditType('edit');
-            }}
-          >
-            edit
-          </Button>
+          <>
+            <Button
+              type="primary"
+              className={styles['action-button']}
+              disabled={unitStatus === UnitStatus.LOCKED}
+              onClick={() => {
+                setUnitFormData(unit);
+                setEditType('edit');
+              }}
+            >
+              edit
+            </Button>
+            <Button
+              type="primary"
+              className={styles['action-button']}
+              disabled={unitStatus === UnitStatus.LOCKED}
+              onClick={() => {
+                console.log('deploy');
+              }}
+            >
+              deploy
+            </Button>
+          </>
         );
       }
     }
@@ -288,6 +324,16 @@ const Unit: FC = () => {
           <Loading className={styles.loading} />
         )}
       </div>
+
+      {Boolean(editType) && (
+        <UnitForm
+          title={`${editType} unit`}
+          visible={Boolean(editType)}
+          unit={unitFormData}
+          onSubmit={onUnitFormSubmit}
+          onClose={onUnitFormClose}
+        />
+      )}
     </div>
   );
 };
