@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Col, Modal, Form, Input, Row, Select } from 'antd';
-import AsyncSelect from '@/pages/unit/components/asyncSelect';
+import AsyncSelect from '@/components/asyncSelect';
 import fetchData from '@/utils/request/fetchData';
 import { GetBranches, GetRepositories } from '@/utils/request/apiConfigCenter';
 import { UnitStatus, UnitType } from '@/utils/varible';

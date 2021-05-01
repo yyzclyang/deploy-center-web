@@ -14,7 +14,7 @@ import Loading from '@/components/loading';
 import fetchData from '@/utils/request/fetchData';
 import { UnitStatus, UnitType } from '@/utils/varible';
 import UnitForm from './components/unitForm';
-import AsyncSelect from './components/asyncSelect';
+import AsyncSelect from '../../components/asyncSelect';
 import { BranchesInfo, UnitData, UnitFormValues } from './types';
 import styles from './unit.module.scss';
 
