@@ -220,6 +220,10 @@ const UnitForm: FC<EditUnitProps> = props => {
             <Form.Item
               name="buildFolder"
               label="Build Folder"
+              tooltip={{
+                title: '相对于项目根目录的路径，不以 / 开头',
+                color: '#4091F7'
+              }}
               rules={[{ required: true, message: 'Please enter build folder' }]}
             >
               <Input placeholder="Please enter build folder" allowClear />
@@ -248,6 +252,10 @@ const UnitForm: FC<EditUnitProps> = props => {
             <Form.Item
               name="uploadTargetFolder"
               label="Upload Target Folder"
+              tooltip={{
+                title: '阿里云OSS 存储文件夹路径，以 / 开头',
+                color: '#4091F7'
+              }}
               rules={[
                 { required: true, message: 'Please enter upload target folder' }
               ]}
