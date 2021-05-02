@@ -1,9 +1,11 @@
 import { FC, useState } from 'react';
-import { Button, message, Switch, Table, Tag } from 'antd';
+import { Button, message, Modal, Switch, Table, Tag } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import useRequest, { mutateDate } from '@/utils/request/useRequest';
 import {
   CreateTask,
   CreateUnit,
+  DeleteUnits,
   GetBranches,
   GetTasks,
   GetUnits,
@@ -32,6 +34,10 @@ const Unit: FC = () => {
     setUnitFormData(null);
   };
 
+  const createUnit = (createData: Partial<UnitFormValues>) => {
+    return fetchData([CreateUnit], createData);
+  };
+
   const updateUnit = async (
     unitId: string,
     updateData: Partial<UnitFormValues>
@@ -51,24 +57,23 @@ const Unit: FC = () => {
   };
 
   const onUnitFormSubmit = (values: Partial<UnitFormValues>) => {
-    return (() => {
-      if (unitFormData) {
-        return updateUnit(unitFormData.id, values);
-      }
-      return fetchData([CreateUnit], values);
-    })().then(
+    const submitAction = unitFormData
+      ? updateUnit(unitFormData.id, values)
+      : createUnit(values);
+    return submitAction.then(
       () => {
         message.success(`${unitFormData ? 'update' : 'create'} unit success`);
         onUnitFormClose();
-        mutateDate([GetUnits]);
+        return mutateDate([GetUnits]);
       },
-      () => {
+      reason => {
         message.error(`${unitFormData ? 'update' : 'create'} unit fail`);
+        throw reason;
       }
     );
   };
 
-  const onCreateTask = (unit: UnitData) => {
+  const createTask = (unit: UnitData) => {
     return fetchData([CreateTask], { unitId: unit.id }).then(
       () => {
         message.success('create task success');
@@ -76,6 +81,21 @@ const Unit: FC = () => {
       },
       () => {
         message.error('create task fail');
+      }
+    );
+  };
+
+  const deleteUnit = (unitId: string) => {
+    return fetchData([DeleteUnits, { id: unitId }], undefined, {
+      method: 'DELETE'
+    }).then(
+      () => {
+        message.success('delete unit success');
+        mutateDate([GetUnits]);
+      },
+      reason => {
+        message.error('delete unit fail');
+        throw reason;
       }
     );
   };
@@ -111,8 +131,8 @@ const Unit: FC = () => {
       title: 'repository',
       key: 'repository',
       width: 50,
-      render: (unit: UnitData) => {
-        return unit.repository.repositoryName;
+      render: ({ repository }: UnitData) => {
+        return repository?.repositoryName ?? '--';
       }
     },
     {
@@ -128,7 +148,7 @@ const Unit: FC = () => {
         return (
           <AsyncSelect
             value={branch}
-            disabled={unitStatus === UnitStatus.LOCKED}
+            disabled={unitStatus === UnitStatus.LOCKED || !repositoryId}
             onFetchListData={() => {
               return fetchData<BranchesInfo>(
                 [GetBranches, { id: repositoryId }],
@@ -269,7 +289,7 @@ const Unit: FC = () => {
       title: 'Action',
       key: 'operation',
       fixed: 'right',
-      width: 65,
+      width: 100,
       render: (unit: UnitData) => {
         const { unitStatus } = unit;
 
@@ -291,10 +311,26 @@ const Unit: FC = () => {
               className={styles['action-button']}
               disabled={unitStatus === UnitStatus.LOCKED}
               onClick={() => {
-                return onCreateTask(unit);
+                return createTask(unit);
               }}
             >
               deploy
+            </Button>
+            <Button
+              type="primary"
+              className={styles['action-button']}
+              disabled={unitStatus === UnitStatus.LOCKED}
+              onClick={() => {
+                Modal.confirm({
+                  icon: <ExclamationCircleOutlined />,
+                  content: `Are you sure to delete ${unit.unitName}?`,
+                  onOk() {
+                    return deleteUnit(unit.id);
+                  }
+                });
+              }}
+            >
+              delete
             </Button>
           </>
         );
@@ -326,7 +362,7 @@ const Unit: FC = () => {
                 key: unit.id
               };
             })}
-            scroll={{ x: 2000 }}
+            scroll={{ x: 2100 }}
             sticky
           />
         ) : error ? (

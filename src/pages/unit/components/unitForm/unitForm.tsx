@@ -37,7 +37,7 @@ interface EditUnitProps {
   unit?: UnitData;
   title: string;
   visible: boolean;
-  onSubmit: (values: Partial<UnitFormValues>) => void;
+  onSubmit: (values: Partial<UnitFormValues>) => Promise<void>;
   onClose: () => void;
 }
 
@@ -53,15 +53,11 @@ const UnitForm: FC<EditUnitProps> = props => {
     return form
       .validateFields()
       .then((values: UnitFormOriginValues) => {
-        form.resetFields();
-        // if (unit) {
-        //   const { unitType, repository, buildScripts, ...rest } = values;
-        //   return props.onSubmit({
-        //     ...rest,
-        //     buildScripts: buildScripts.split(';')
-        //   });
-        // }
-        return props.onSubmit(getUnitFormValues(values, Boolean(unit)));
+        return props
+          .onSubmit(getUnitFormValues(values, Boolean(unit)))
+          .then(() => {
+            form.resetFields();
+          });
       })
       .catch(info => {
         console.error('Validate Failed:', info);
@@ -189,7 +185,8 @@ const UnitForm: FC<EditUnitProps> = props => {
               <AsyncSelect
                 placeholder="Please enter branch"
                 onFetchListData={async () => {
-                  const repositoryId = unit?.repository?.id ?? form.getFieldValue('repository');
+                  const repositoryId =
+                    unit?.repository?.id ?? form.getFieldValue('repository');
                   if (!repositoryId) {
                     Modal.error({
                       title: 'error',
@@ -253,7 +250,7 @@ const UnitForm: FC<EditUnitProps> = props => {
               name="uploadTargetFolder"
               label="Upload Target Folder"
               tooltip={{
-                title: '阿里云OSS 存储文件夹路径，以 / 开头',
+                title: '阿里云OSS 存储文件夹路径，前缀需加 /',
                 color: '#4091F7'
               }}
               rules={[

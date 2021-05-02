@@ -24,7 +24,7 @@ const Task: FC = () => {
       key: 'repository',
       width: 40,
       render: ({ repository }: TaskData) => {
-        return repository.repositoryName;
+        return repository?.repositoryName ?? '--';
       }
     },
     {
@@ -32,7 +32,7 @@ const Task: FC = () => {
       key: 'unit',
       width: 40,
       render: ({ unit }: TaskData) => {
-        return unit.unitName;
+        return unit?.unitName ?? '--';
       }
     },
     {

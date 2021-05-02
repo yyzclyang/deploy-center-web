@@ -60,6 +60,11 @@ export const UpdateUnits: ApiHostConfig = {
   apiPath: '/units/:id'
 };
 
+export const DeleteUnits: ApiHostConfig = {
+  serverType: ServerType.v1,
+  apiPath: '/units/:id'
+};
+
 export const GetBranches: ApiHostConfig = {
   serverType: ServerType.v1,
   apiPath: '/branches/:id'

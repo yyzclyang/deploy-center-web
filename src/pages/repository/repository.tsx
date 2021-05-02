@@ -28,19 +28,24 @@ const Repository: FC = () => {
     setRepositoryFormData(null);
   };
 
+  const createRepository = (createData: Partial<RepositoryData>) => {
+    return fetchData([CreateRepository], createData);
+  };
+
+  const updateRepository = (
+    repositoryId: string,
+    updateData: Partial<RepositoryData>
+  ) => {
+    return fetchData([UpdateRepository, { id: repositoryId }], updateData, {
+      method: 'PATCH'
+    });
+  };
+
   const onRepositoryFormSubmit = (values: Partial<RepositoryData>) => {
-    return (() => {
-      if (repositoryFormData) {
-        return fetchData(
-          [UpdateRepository, { id: repositoryFormData.id }],
-          values,
-          {
-            method: 'PATCH'
-          }
-        );
-      }
-      return fetchData([CreateRepository], values);
-    })().then(
+    const submitAction = repositoryFormData
+      ? updateRepository(repositoryFormData.id, values)
+      : createRepository(values);
+    return submitAction.then(
       () => {
         message.success(
           `${repositoryFormData ? 'update' : 'create'} repository success`
