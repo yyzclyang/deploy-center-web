@@ -9,7 +9,7 @@ interface EditRepositoryProps {
   repository?: RepositoryData;
   title: string;
   visible: boolean;
-  onSubmit: (values: RepositoryFormValues) => void;
+  onSubmit: (values: RepositoryFormValues) => Promise<void>;
   onClose: () => void;
 }
 
@@ -25,8 +25,9 @@ const RepositoryForm: FC<EditRepositoryProps> = props => {
     return form
       .validateFields()
       .then((values: RepositoryFormValues) => {
-        form.resetFields();
-        return props.onSubmit(values);
+        return props.onSubmit(values).then(() => {
+          form.resetFields();
+        });
       })
       .catch(info => {
         console.error('Validate Failed:', info);

@@ -59,7 +59,11 @@ export function getRequestOptions(
     },
     body: JSON.stringify(requestData ?? '')
   };
-  if (requestOptions.method === 'get') {
+  if (
+    ['get', 'delete'].some(
+      method => method === requestOptions.method.toLowerCase()
+    )
+  ) {
     delete requestOptions.body;
   }
   return requestOptions;

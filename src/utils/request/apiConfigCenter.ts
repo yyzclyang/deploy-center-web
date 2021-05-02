@@ -40,6 +40,11 @@ export const UpdateRepository: ApiHostConfig = {
   apiPath: '/repositories/:id'
 };
 
+export const DeleteRepository: ApiHostConfig = {
+  serverType: ServerType.v1,
+  apiPath: '/repositories/:id'
+};
+
 export const GetUnits: ApiHostConfig = {
   serverType: ServerType.v1,
   apiPath: '/units'

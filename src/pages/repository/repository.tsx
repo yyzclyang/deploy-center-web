@@ -1,8 +1,10 @@
 import { FC, useState } from 'react';
-import { Button, message, Table } from 'antd';
+import { Button, message, Modal, Table } from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import useRequest, { mutateDate } from '@/utils/request/useRequest';
 import {
   CreateRepository,
+  DeleteRepository,
   GetRepositories,
   UpdateRepository
 } from '@/utils/request/apiConfigCenter';
@@ -20,6 +22,55 @@ const Repository: FC = () => {
     repositoryFormData,
     setRepositoryFormData
   ] = useState<null | RepositoryData>(null);
+
+  const onRepositoryFormClose = () => {
+    setEditType(null);
+    setRepositoryFormData(null);
+  };
+
+  const onRepositoryFormSubmit = (values: Partial<RepositoryData>) => {
+    return (() => {
+      if (repositoryFormData) {
+        return fetchData(
+          [UpdateRepository, { id: repositoryFormData.id }],
+          values,
+          {
+            method: 'PATCH'
+          }
+        );
+      }
+      return fetchData([CreateRepository], values);
+    })().then(
+      () => {
+        message.success(
+          `${repositoryFormData ? 'update' : 'create'} repository success`
+        );
+        onRepositoryFormClose();
+        return mutateDate([GetRepositories]);
+      },
+      reason => {
+        message.error(
+          `${repositoryFormData ? 'update' : 'create'} repository fail`
+        );
+        throw reason;
+      }
+    );
+  };
+
+  const deleteRepository = (repositoryId: string) => {
+    return fetchData([DeleteRepository, { id: repositoryId }], undefined, {
+      method: 'DELETE'
+    }).then(
+      () => {
+        message.success('delete repository success');
+        mutateDate([GetRepositories]);
+      },
+      reason => {
+        message.error('delete repository fail');
+        throw reason;
+      }
+    );
+  };
 
   const TableConfig = [
     {
@@ -78,55 +129,40 @@ const Repository: FC = () => {
       title: 'Action',
       key: 'operation',
       fixed: 'right',
-      width: 50,
+      width: 90,
       render: (repository: RepositoryData) => {
         return (
-          <Button
-            type="primary"
-            onClick={() => {
-              setRepositoryFormData(repository);
-              setEditType('edit');
-            }}
-          >
-            edit
-          </Button>
+          <>
+            <Button
+              type="primary"
+              className={styles['action-button']}
+              onClick={() => {
+                setRepositoryFormData(repository);
+                setEditType('edit');
+              }}
+            >
+              edit
+            </Button>
+            <Button
+              type="primary"
+              className={styles['action-button']}
+              onClick={() => {
+                Modal.confirm({
+                  icon: <ExclamationCircleOutlined />,
+                  content: `Are you sure to delete ${repository.repositoryName}?`,
+                  onOk() {
+                    return deleteRepository(repository.id);
+                  }
+                });
+              }}
+            >
+              delete
+            </Button>
+          </>
         );
       }
     }
   ];
-
-  const onRepositoryFormClose = () => {
-    setEditType(null);
-    setRepositoryFormData(null);
-  };
-
-  const onRepositoryFormSubmit = (values: Partial<RepositoryData>) => {
-    return (() => {
-      if (repositoryFormData) {
-        return fetchData(
-          [UpdateRepository, { id: repositoryFormData.id }],
-          values,
-          {
-            method: 'PATCH'
-          }
-        );
-      }
-      return fetchData([CreateRepository], values);
-    })().then(
-      () => {
-        message.success(
-          `${repositoryFormData ? 'update' : 'create'} repository success`
-        );
-        onRepositoryFormClose();
-        mutateDate([GetRepositories]);
-      },
-      () => {
-        message.error(
-          `${repositoryFormData ? 'update' : 'create'} repository fail`
-        );
-      }
-    );
-  };
 
   return (
     <div className={styles['main-content']}>
