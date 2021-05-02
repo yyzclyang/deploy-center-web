@@ -6,7 +6,7 @@ import fetchData from '@/utils/request/fetchData';
 import { LoginApi } from '@/utils/request/apiConfigCenter';
 import history from '@/utils/history';
 import { GlobalContext } from '@/store';
-import style from './login.module.scss';
+import styles from './login.module.scss';
 
 interface LoginFormValue {
   username: string;
@@ -39,52 +39,72 @@ const Login: FC = () => {
   };
 
   return (
-    <div className={style.page}>
-      <div className={style['login-box']}>
-        <p className={style.title}>Deploy Center</p>
+    <div className={styles.page}>
+      <div className={styles.content}>
+        <div className={styles['login-box']}>
+          <p className={styles.title}>Deploy Center</p>
 
-        <Form
-          name="normal_login"
-          className={style['login-form']}
-          initialValues={{ remember: true }}
-          onFinish={onLogin}
-        >
-          <Form.Item
-            name="username"
-            rules={[{ required: true, message: 'Please input your Username!' }]}
+          <Form
+            name="normal_login"
+            className={styles['login-form']}
+            initialValues={{ remember: true }}
+            onFinish={onLogin}
           >
-            <Input
-              prefix={<UserOutlined className={style['site-form-item-icon']} />}
-              placeholder="Username"
-            />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: 'Please input your Password!' }]}
-          >
-            <Input
-              prefix={<LockOutlined className={style['site-form-item-icon']} />}
-              type="password"
-              placeholder="Password"
-            />
-          </Form.Item>
-          <Form.Item>
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
-          </Form.Item>
-
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className={style['login-form-button']}
+            <Form.Item
+              name="username"
+              rules={[
+                { required: true, message: 'Please input your Username!' }
+              ]}
             >
-              Log in
-            </Button>
-          </Form.Item>
-        </Form>
+              <Input
+                prefix={
+                  <UserOutlined className={styles['site-form-item-icon']} />
+                }
+                placeholder="Username"
+              />
+            </Form.Item>
+            <Form.Item
+              name="password"
+              rules={[
+                { required: true, message: 'Please input your Password!' }
+              ]}
+            >
+              <Input
+                prefix={
+                  <LockOutlined className={styles['site-form-item-icon']} />
+                }
+                type="password"
+                placeholder="Password"
+              />
+            </Form.Item>
+            <Form.Item>
+              <Form.Item name="remember" valuePropName="checked" noStyle>
+                <Checkbox>Remember me</Checkbox>
+              </Form.Item>
+            </Form.Item>
+
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className={styles['login-form-button']}
+              >
+                Log in
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
       </div>
+      <footer className={styles.footer}>
+        <a
+          className={styles.link}
+          href="https://www.beian.miit.gov.cn"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ICP许可证号 粤ICP备19127738号
+        </a>
+      </footer>
     </div>
   );
 };

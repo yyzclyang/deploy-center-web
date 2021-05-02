@@ -1,30 +1,46 @@
-@import '@/vars.module.scss';
-
 .page {
   width: 100vw;
   height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.login-box {
-  width: 400px;
-  padding: 50px;
-  box-shadow: 0 0 5px 2px rgb(176, 165, 165);
+  flex-direction: column;
 
-  > .title {
+  .content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .login-box {
+      width: 400px;
+      padding: 50px;
+      box-shadow: 0 0 5px 2px rgb(176, 165, 165);
+
+      > .title {
+        text-align: center;
+        font-size: 24px;
+        color: #666;
+      }
+
+      .login-form {
+        max-width: 300px;
+      }
+      .login-form-button {
+        width: 100%;
+      }
+      .site-form-item-icon {
+        color: rgba(0, 0, 0, 0.25);
+      }
+    }
+  }
+
+  .footer {
     text-align: center;
-    font-size: 24px;
-    color: #666;
-  }
-
-  .login-form {
-    max-width: 300px;
-  }
-  .login-form-button {
-    width: 100%;
-  }
-  .site-form-item-icon {
-    color: rgba(0, 0, 0, 0.25);
+    padding: 16px 0;
+    margin-top: 16px;
+    border-top: 1px solid #eee;
+    .link {
+      font-size: 12px;
+      color: #888888;
+    }
   }
 }
