@@ -35,7 +35,19 @@ const Unit: FC = () => {
   };
 
   const createUnit = (createData: Partial<UnitFormValues>) => {
-    return fetchData([CreateUnit], createData);
+    return fetchData([CreateUnit], createData)
+      .then(
+        () => {
+          message.success('create unit success');
+        },
+        reason => {
+          message.error('create unit fail');
+          throw reason;
+        }
+      )
+      .finally(() => {
+        return mutateDate([GetUnits]);
+      });
   };
 
   const updateUnit = async (
@@ -53,24 +65,28 @@ const Unit: FC = () => {
 
     return fetchData([UpdateUnits, { id: unitId }], updateData, {
       method: 'PATCH'
-    });
+    })
+      .then(
+        () => {
+          message.success('update unit success');
+        },
+        reason => {
+          message.error('update unit fail');
+          throw reason;
+        }
+      )
+      .finally(() => {
+        return mutateDate([GetUnits]);
+      });
   };
 
   const onUnitFormSubmit = (values: Partial<UnitFormValues>) => {
     const submitAction = unitFormData
       ? updateUnit(unitFormData.id, values)
       : createUnit(values);
-    return submitAction.then(
-      () => {
-        message.success(`${unitFormData ? 'update' : 'create'} unit success`);
-        onUnitFormClose();
-        return mutateDate([GetUnits]);
-      },
-      reason => {
-        message.error(`${unitFormData ? 'update' : 'create'} unit fail`);
-        throw reason;
-      }
-    );
+    return submitAction.then(() => {
+      onUnitFormClose();
+    });
   };
 
   const createTask = (unit: UnitData) => {
@@ -272,9 +288,10 @@ const Unit: FC = () => {
       key: 'unitStatus',
       fixed: 'right',
       width: 35,
-      render: ({ id, unitStatus }: UnitData) => {
+      render: ({ id, unitStatus, repository }: UnitData) => {
         return (
           <Switch
+            disabled={!repository.id}
             checked={unitStatus === UnitStatus.LOCKED}
             onChange={value => {
               return updateUnit(id, {
@@ -291,14 +308,14 @@ const Unit: FC = () => {
       fixed: 'right',
       width: 100,
       render: (unit: UnitData) => {
-        const { unitStatus } = unit;
+        const { unitStatus, repository } = unit;
 
         return (
           <>
             <Button
               type="primary"
               className={styles['action-button']}
-              disabled={unitStatus === UnitStatus.LOCKED}
+              disabled={unitStatus === UnitStatus.LOCKED || !repository.id}
               onClick={() => {
                 setUnitFormData(unit);
                 setEditType('edit');
@@ -309,7 +326,7 @@ const Unit: FC = () => {
             <Button
               type="primary"
               className={styles['action-button']}
-              disabled={unitStatus === UnitStatus.LOCKED}
+              disabled={unitStatus === UnitStatus.LOCKED || !repository.id}
               onClick={() => {
                 return createTask(unit);
               }}
@@ -319,7 +336,9 @@ const Unit: FC = () => {
             <Button
               type="primary"
               className={styles['action-button']}
-              disabled={unitStatus === UnitStatus.LOCKED}
+              disabled={
+                unitStatus === UnitStatus.LOCKED && Boolean(repository.id)
+              }
               onClick={() => {
                 Modal.confirm({
                   icon: <ExclamationCircleOutlined />,
