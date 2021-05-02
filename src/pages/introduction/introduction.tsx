@@ -1,7 +1,19 @@
-import { FC } from 'react';
+import { FC, useContext, useEffect } from 'react';
+import history from '@/utils/history';
+import { GlobalContext } from '@/store';
 import styles from './introduction.module.scss';
 
 const Introduction: FC = () => {
+  const {
+    state: { token }
+  } = useContext(GlobalContext);
+
+  useEffect(() => {
+    if (!token) {
+      history.push('/login');
+    }
+  }, [token]);
+
   return (
     <div className={styles['main-content']}>
       <article>
