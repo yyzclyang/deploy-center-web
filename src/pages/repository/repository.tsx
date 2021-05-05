@@ -86,13 +86,6 @@ const Repository: FC = () => {
       fixed: 'left'
     },
     {
-      title: 'index',
-      dataIndex: 'index',
-      key: 'index',
-      width: 35,
-      fixed: 'left'
-    },
-    {
       title: 'repositoryUrl',
       dataIndex: 'repositoryUrl',
       key: 'repositoryUrl',

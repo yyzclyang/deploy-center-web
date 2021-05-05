@@ -125,13 +125,6 @@ const Unit: FC = () => {
       fixed: 'left'
     },
     {
-      title: 'index',
-      dataIndex: 'index',
-      key: 'index',
-      width: 25,
-      fixed: 'left'
-    },
-    {
       title: 'unitType',
       key: 'unitType',
       width: 35,
